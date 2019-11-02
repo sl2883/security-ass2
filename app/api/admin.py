@@ -26,7 +26,7 @@ def set_coins(db, session):
     ctxt_bytes = bytes.fromhex(ctxt)
     cbc = app.api.encr_decr.Encryption(encryption_key)
     try:
-        dpt = cbc.decrypt(ctxt_bytes)
+        dpt = cbc.decrypt(encryption_key, ctxt_bytes)
     except ValueError as exc:
         return template(
                 "profile",

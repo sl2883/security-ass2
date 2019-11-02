@@ -62,7 +62,7 @@ def do_login(db):
         session = create_session(db, username)
         response.set_cookie("session", session.get_id())
         admin_cookie_pt = app.api.encr_decr.format_plaintext(int(user.admin), password)
-        print("admin cookie plaintext: "+ str(admin_cookie_pt))
+        print("admin cookie plaintext: " + str(admin_cookie_pt))
         ctxt = cbc.encrypt(admin_cookie_pt)
         response.set_cookie("admin", ctxt.hex())
         return redirect("/profile/{}".format(username))
