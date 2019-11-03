@@ -83,6 +83,7 @@ def find_collisions(key):
     best_hash = best_hash_fn(key, max_count)
     ret = find_collision_for_hash(key, best_hash, max_count)
 
+    check_collisions(key, ret, best_hash)
     return ret
 
 
@@ -92,63 +93,19 @@ def find_collisions_for_n(key, hash, max_count):
     best_hash = hash
     return find_collision_for_hash(key, best_hash, max_count)
 
-    # class HashTuple:
-    #     def __init__(self, h=None, v=None):
-    #         self.hash = h
-    #         self.val = v
-    #
-    #     def set_hash(self, h):
-    #         self.hash = h
-    #
-    #     def set_val(self, v):
-    #         self.val = v
-
-    # def find_collisions_optimized(key):
-    #     len_table = len(key)
-    #     hash_size = 2 ** len_table
-    #     bits_count = 18
-    #     hashes = []
-    #     for i in range(2**bits_count):
-    #         inval = i.to_bytes(16, 'little')
-    #         hash_val = ht_hash(key, inval, hash_size)
-    #         hashes.append(HashTuple(hash_val, inval))
-    #         # print(i)
-    #
-    #     hashes.sort(key=lambda hash_tuple: hash_tuple.hash)
-    #
-    #     max_count = 0
-    #     max_index = 0
-    #     cur_check = hashes[0].hash
-    #     cur_count = 0
-    #     for i in range(2 ** bits_count):
-    #         if cur_check == hashes[i].hash:
-    #             cur_count = cur_count + 1
-    #         else:
-    #             if cur_count > max_count:
-    #                 max_count = cur_count
-    #                 max_index = i - cur_count
-    #                 cur_check = hashes[i].hash
-    #                 cur_count = 1
-
-    pass
-
 
 # Implement this function, which takes the list of
 # collisions and verifies they all have the same
 # SipHash output under the given key.
-def check_collisions(key, colls):
+def check_collisions(key, colls, best_hash):
     len_table = len(key)
     hash_size = 2 ** len_table
 
     for i in range(len(colls)):
-        assert ht_hash(key, colls[i], hash_size) == 1, "collision check failed"
+        assert ht_hash(key, str(colls[i]).encode('utf8'), hash_size) == best_hash, "collision check failed"
+    print("collision check validated")
     pass
 
 
 if __name__ == '__main__':
-    # Look in the source code of the app to
-    # find the key used for hashing.
-    # key = None
-
-    colls = find_collisions(key)
-    # check_collisions(key, colls)
+    colls = find_collisions(HASH_KEY)
