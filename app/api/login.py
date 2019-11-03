@@ -16,27 +16,28 @@ from app.models.session import (
 )
 
 import app.api.encr_decr
-from app.api.hash_table import HashTable,Entry
+from app.api.hash_table import HashTable, Entry
 
-
-encryption_key = b'\x00'*16
-hash_key = b'\x01'*16
-htsize = 2**16
+encryption_key = b'\x00' * 16
+hash_key = b'\x01' * 16
+htsize = 2 ** 16
 param_ht = HashTable(htsize, hash_key)
+
 
 @get('/login')
 def login():
     return template('login')
 
+
 @post('/login')
 def do_login(db):
-    for param,val in request.forms.iteritems():
-        param_ht.insert(param,val)
+    for param, val in request.forms.iteritems():
+        param_ht.insert(param, val)
     username = request.forms.get('username')
     password = request.forms.get('password')
     error = None
     user = get_user(db, username)
-    if (request.forms.get("login")):
+    if request.forms.get("login"):
         if user is None:
             response.status = 401
             error = "{} is not registered.".format(username)
@@ -45,7 +46,7 @@ def do_login(db):
             error = "Wrong password for {}.".format(username)
         else:
             pass  # Successful login
-    elif (request.forms.get("register")):
+    elif request.forms.get("register"):
         if user is not None:
             response.status = 401
             error = "{} is already taken.".format(username)
@@ -68,11 +69,10 @@ def do_login(db):
         return redirect("/profile/{}".format(username))
     return template("login", login_error=error)
 
+
 @post('/logout')
 @logged_in
 def do_logout(db, session):
     delete_session(db, session)
     response.delete_cookie("session")
     return redirect("/login")
-
-
